@@ -15,6 +15,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4 # Essential to get your 'contracts' files
 
+      - name: Checkout Spectral Ruleset Repository
+        # This step checks out the repository containing the .spectral.yaml file
+        # into a specific local path on the runner.
+        uses: actions/checkout@v4
+        with:
+          repository: angel-cruz-femsa/reusable-actions # The repository where the ruleset lives
+          ref: v1.0.0 # Use the specific tag of your reusable-actions repository
+          path: ./.github/spectral-rules # Checkout into a directory within the current workspace
+
       - name: Validate My API Spec
         # Referencing the action from the external repository
         # Use the repository owner/name followed by the directory within that repo
@@ -27,7 +36,6 @@ jobs:
         # openapi_file: contracts/my-api/openapi.yaml # Path to your spec in THIS repository
         uses: angel-cruz-femsa/reusable-actions/.github/actions/validate-openapi@v1.0.0
         with:
-          openapi_file: angel-cruz-femsa/reusable-actions/.spectral.yaml@v1.0.0
-          spectral_ruleset_path: .spectral.yaml # Path to your project's ruleset in THIS repository
-                                                # Or, if using a ruleset from the action repo,
-                                                # it would be something like 'my-org/github-actions/.spectral.yaml@v1.0.0'
+          openapi_file: contracts/my-api/openapi.yaml # Path to your spec in THIS repository
+          # Now, the ruleset path refers to the local path where it was checked out.
+          spectral_ruleset_path: ./.github/spectral-rules/.spectral.yaml # Updated to local path
