@@ -1,0 +1,33 @@
+# .github/workflows/ci.yml
+name: API Spec Validation CI
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'contracts/**.yaml' # Trigger when any .yaml file changes in 'contracts'
+
+jobs:
+  validate-openapi-specs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4 # Essential to get your 'contracts' files
+
+      - name: Validate My API Spec
+        # Referencing the action from the external repository
+        # Use the repository owner/name followed by the directory within that repo
+        # and then the tag/branch/commit hash.
+        # Format: {owner}/{repo-name}/{path-to-action}@{ref}
+        # Always use a specific tag (v1.0.0), a commit hash (@<commit_sha>),
+        # or a branch (@main) for stability. Using a branch like @main means
+        # you'll always get the latest changes on that branch, which can be
+        # convenient but also risky if breaking changes are introduced.
+        # openapi_file: contracts/my-api/openapi.yaml # Path to your spec in THIS repository
+        uses: angel-cruz-femsa/reusable-actions/.github/actions/validate-openapi@v1.0.0
+        with:
+          openapi_file: angel-cruz-femsa/reusable-actions/.spectral.yaml@v1.0.0
+          spectral_ruleset_path: .spectral.yaml # Path to your project's ruleset in THIS repository
+                                                # Or, if using a ruleset from the action repo,
+                                                # it would be something like 'my-org/github-actions/.spectral.yaml@v1.0.0'
